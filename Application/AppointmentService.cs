@@ -1,4 +1,5 @@
 ﻿using Domain;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,10 +11,13 @@ namespace Application
     public class AppointmentService : IAppointmentService
     {
         private readonly IAppointmentRepository _repository;
+        private readonly ILogger<AppointmentService> _logger;
 
-        public AppointmentService(IAppointmentRepository repository)
+        public AppointmentService(IAppointmentRepository repository, ILogger<AppointmentService> logger)
         {
             _repository = repository;
+            _logger = logger;
+
         }
 
         public async Task<IEnumerable<DateTime>> GetAvailableSlots(int clinicId, DateTime date)

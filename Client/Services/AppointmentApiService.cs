@@ -1,6 +1,6 @@
 ﻿using Client.Dto;
 using Client.Services.Interfases;
-using Domain;
+ 
 using System.Net.Http.Json;
 using static Client.Pages.Weather;
 using static System.Net.WebRequestMethods;

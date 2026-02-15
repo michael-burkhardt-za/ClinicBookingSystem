@@ -1,4 +1,5 @@
 ﻿using Domain;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,9 +11,12 @@ namespace Application
     public class PatientService : IPatientService
     {
         private readonly IPatientRepository _repository;
-        public PatientService(IPatientRepository repository)
+        private readonly ILogger<PatientService> _logger;
+
+        public PatientService(IPatientRepository repository, ILogger<PatientService> logger)
         {
             _repository = repository;
+            _logger = logger;
         }
         public async Task<Patient> AddAsync(Patient patient)
         {
