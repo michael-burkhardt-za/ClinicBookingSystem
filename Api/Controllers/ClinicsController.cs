@@ -1,6 +1,5 @@
 ﻿using Application;
 using Domain;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers
@@ -35,6 +34,7 @@ namespace Api.Controllers
 
             return Ok(clinic);
         }
+        
         [HttpPost]
         public async Task<IActionResult> Add([FromBody] Clinic clinic)
         {
@@ -42,6 +42,7 @@ namespace Api.Controllers
             var created = await _clinicService.AddAsync(clinic);
             return CreatedAtAction(nameof(GetAll), new { id = created.Id }, created);
         }
+        
         [HttpPut]
         public async Task<IActionResult> Update([FromBody] Clinic clinic)
         {
@@ -53,6 +54,7 @@ namespace Api.Controllers
             var updated = await _clinicService.UpdateAsync(clinic);
             return Ok(updated);
         }
+        
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {

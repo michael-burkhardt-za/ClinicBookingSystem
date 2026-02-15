@@ -26,5 +26,22 @@ namespace Application
         {
             return await _repository.GetAllAsync();
         }
+
+        public async Task<bool> DeleteAsync(int id)
+        {
+            await _repository.DeleteAsync(id);
+            return true;
+        }
+
+        public async Task<Patient?> GetByIdAsync(int id)
+        {
+            return await _repository.GetByIdAsync(id);
+        }
+
+        public async Task<bool> UpdateAsync(Patient patient)
+        {
+            await _repository.UpdateAsync(patient);
+            return true;
+        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿ 
 @page "/clinic/create"
 @page "/clinic/edit/{Id:int}"
+@inject ISnackbar Snackbar
 
 @using System.Net.Http.Json
 @inject HttpClient Http
@@ -75,19 +76,21 @@
 
         if (IsEditMode)
         {
-            await Http.PutAsJsonAsync($"clinics", _clinic);
-            //_http.PostAsJsonAsync("appointments", appointment);
+            await Http.PutAsJsonAsync("clinics", _clinic);
+            Snackbar.Add("Clinic updated successfully", Severity.Success);
+            
         }
         else
         {
             await Http.PostAsJsonAsync("clinics", _clinic);
+            Snackbar.Add("Clinic created successfully", Severity.Success);
         }
 
-        Nav.NavigateTo("/clinic");
+        Nav.NavigateTo("/clinics");
     }
 
     private void Cancel()
     {
-        Nav.NavigateTo("/clinic");
+        Nav.NavigateTo("/clinics");
     }
 }

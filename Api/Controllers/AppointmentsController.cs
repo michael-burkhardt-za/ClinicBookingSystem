@@ -12,8 +12,6 @@ namespace Api.Controllers
     {
         private readonly IAppointmentService _service;
         private readonly ILogger<AppointmentsController> _logger;
-
-
         public AppointmentsController(IAppointmentService service, ILogger<AppointmentsController> logger)
         {
             _logger = logger;
