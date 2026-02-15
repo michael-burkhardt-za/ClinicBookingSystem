@@ -1,0 +1,122 @@
+﻿@page "/clinics"
+@inject HttpClient Http
+@inject NavigationManager Nav
+@inject ISnackbar Snackbar
+ 
+
+
+<MudPaper Class="pa-4">
+
+  @*   <MudStack Row="true" Justify="space-between" AlignItems="center" Class="mb-4"> *@
+    <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems.Center" Class="mb-4">
+        <MudText Typo="Typo.h5">Clinics</MudText>
+
+        <MudButton Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   StartIcon="@Icons.Material.Filled.Add"
+                   OnClick="CreateClinic">
+            Create New Clinic
+        </MudButton>
+    </MudStack>
+
+    <MudTable Items="_clinics"
+              Hover="true"
+              Bordered="true"
+              Striped="true"
+              Loading="_loading">
+
+        <HeaderContent>
+            <MudTh>Name</MudTh>
+            <MudTh>Address</MudTh>
+            <MudTh>Phone</MudTh>
+            <MudTh Align="Align.Right">Actions</MudTh>
+        </HeaderContent>
+
+        <RowTemplate>
+            <MudTd DataLabel="Name">@context.Name</MudTd>
+            <MudTd DataLabel="Address">@context.Address</MudTd>
+            <MudTd DataLabel="Phone">@context.Phone</MudTd>
+
+            <MudTd Align="Align.Right">
+                <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                               Color="Color.Primary"
+                               OnClick="@(() => EditClinic(context.Id))" />
+
+                <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                               Color="Color.Error"
+                               OnClick="@(() => DeleteClinic(context.Id))" />
+            </MudTd>
+        </RowTemplate>
+
+        <NoRecordsContent>
+            <MudText>No clinics found.</MudText>
+        </NoRecordsContent>
+
+    </MudTable>
+
+</MudPaper>
+
+@code {
+
+    private List<ClinicDto> _clinics = new();
+    private bool _loading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadClinics();
+    }
+
+    private async Task LoadClinics()
+    {
+        try
+        {
+            _loading = true;
+            _clinics = await Http.GetFromJsonAsync<List<ClinicDto>>("clinics") ?? new();
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Error loading clinics: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            _loading = false;
+        }
+    }
+
+    private void CreateClinic()
+    {
+        Nav.NavigateTo("/clinic/edit");
+    }
+
+    private void EditClinic(int id)
+    {
+        Nav.NavigateTo($"/clinic/edit/{id}");
+    }
+
+    private async Task DeleteClinic(int id)
+    {
+        var confirmed = await DialogService.ShowMessageBox(
+            "Confirm Delete",
+            "Are you sure you want to delete this clinic?",
+            yesText: "Delete",
+            cancelText: "Cancel");
+
+        if (confirmed == true)
+        {
+            var response = await Http.DeleteAsync($"clinics/{id}");
+
+            if (response.IsSuccessStatusCode)
+            {
+                Snackbar.Add("Clinic deleted successfully", Severity.Success);
+                await LoadClinics();
+            }
+            else
+            {
+                Snackbar.Add("Failed to delete clinic", Severity.Error);
+            }
+        }
+    }
+
+    [Inject] private IDialogService DialogService { get; set; } = default!;
+}
+

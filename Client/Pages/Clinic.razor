@@ -1,0 +1,93 @@
+﻿ 
+@page "/clinic/create"
+@page "/clinic/edit/{Id:int}"
+
+@using System.Net.Http.Json
+@inject HttpClient Http
+@inject NavigationManager Nav
+
+<MudPaper Class="pa-6 mx-auto" MaxWidth="600px" Elevation="3">
+
+    <MudText Typo="Typo.h5" Class="mb-4">
+        @(IsEditMode ? "Edit Clinic" : "Create Clinic")
+    </MudText>
+
+    <MudForm @ref="_form" Model="_clinic" OnValidSubmit="SaveClinic">
+
+        <MudTextField Label="Clinic Name"
+                      @bind-Value="_clinic.Name"
+                      For="@(() => _clinic.Name)"
+                      Required="true" />
+
+        <MudTextField Label="Address Line 1"
+                      @bind-Value="_clinic.Address"
+                      For="@(() => _clinic.Address)"
+                      Required="true" />
+
+        <MudTextField Label="Phone"
+                      @bind-Value="_clinic.Phone"
+                      For="@(() => _clinic.Phone)"
+                      Required="true" />
+
+        <MudDivider Class="my-4" />
+
+        <MudStack Row="true" Spacing="2">
+          
+            <MudButton OnClick="SaveClinic"
+                       Variant="Variant.Filled"
+                       Color="Color.Primary">
+                Save
+            </MudButton>
+
+            <MudButton Variant="Variant.Outlined"
+                       Color="Color.Secondary"
+                       OnClick="Cancel">
+                Cancel
+            </MudButton>
+        </MudStack>
+
+    </MudForm>
+</MudPaper>
+
+@code {
+    [Parameter] public int? Id { get; set; }
+
+    private MudForm _form = default!;
+    private ClinicDto _clinic = new();
+    private bool IsEditMode => Id.HasValue;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (IsEditMode)
+        {
+            var clinic = await Http.GetFromJsonAsync<ClinicDto>($"clinics/{Id}");
+            if (clinic is not null)
+                _clinic = clinic;
+        }
+    }
+
+    private async Task SaveClinic()
+    {
+        await _form.Validate();
+
+        if (!_form.IsValid)
+            return;
+
+        if (IsEditMode)
+        {
+            await Http.PutAsJsonAsync($"clinics", _clinic);
+            //_http.PostAsJsonAsync("appointments", appointment);
+        }
+        else
+        {
+            await Http.PostAsJsonAsync("clinics", _clinic);
+        }
+
+        Nav.NavigateTo("/clinic");
+    }
+
+    private void Cancel()
+    {
+        Nav.NavigateTo("/clinic");
+    }
+}

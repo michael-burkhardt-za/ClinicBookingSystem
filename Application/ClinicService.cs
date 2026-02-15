@@ -1,8 +1,10 @@
-﻿using Domain;
+﻿using Application;
+using Domain;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -29,5 +31,25 @@ namespace Application
         {
             return await _repository.AddAsync(clinic);
         }
+
+        public async Task<Clinic?> GetByIdAsync(int id)
+        {
+           return await _repository.GetByIdAsync(id);
+        }
+
+        public async Task<bool> UpdateAsync(Clinic clinic)
+        {
+             await _repository.UpdateAsync(clinic);
+             return true;
+        }
+
+        public async Task<bool> DeleteAsync(int id)
+        {
+            await _repository.DeleteAsync(id);
+            return true;
+        }
     }
 }
+
+
+

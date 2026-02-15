@@ -31,5 +31,40 @@ namespace Infrastructure
             clinic.Id = await _db.ExecuteScalarAsync<int>(sql, clinic);
             return clinic;
         }
+
+        public async Task<Clinic?> GetByIdAsync(int id)
+        {
+            var sql = "SELECT Id, Name, Address, Phone FROM Clinics WHERE Id = @Id";
+            return await _db.QueryFirstOrDefaultAsync<Clinic>(sql, new { Id = id });
+        }
+
+        public async Task<bool> UpdateAsync(Clinic clinic)
+        {
+            if (clinic.Id == 0) return false;
+
+            var sql = @"
+                        UPDATE Clinics
+                        SET Name = @Name,
+                            Address = @Address,
+                            Phone = @Phone
+                        WHERE Id = @Id";
+
+            var rowsAffected = await _db.ExecuteAsync(sql, clinic);
+            return rowsAffected > 0;
+        }
+
+        public async Task<bool> DeleteAsync(int id)
+        {
+            var sql = "DELETE FROM Clinics WHERE Id = @Id";
+
+            var rowsAffected = await _db.ExecuteAsync(sql, new { Id = id });
+            return rowsAffected > 0;
+        }
+
+         
     }
 }
+
+
+
+
