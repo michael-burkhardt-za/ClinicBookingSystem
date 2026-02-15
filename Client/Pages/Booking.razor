@@ -1,0 +1,190 @@
+﻿@page "/booking"
+@inject IAppointmentApiService AppointmentService
+@inject ISnackbar Snackbar
+ 
+
+<MudPaper Class="pa-4" Elevation="2">
+   @*  <MudSelect T="ClinicDto" Label="Select Clinic" @bind-Value="_selectedClinic">
+        @foreach (var clinic in _clinics)
+        {
+            <MudSelectItem Value="@clinic">@clinic.Name</MudSelectItem>
+        }
+    </MudSelect> *@
+
+    <MudText Typo="Typo.h5" Class="mb-4">
+        Book Appointment
+    </MudText>
+
+    <MudGrid>
+
+        <!-- Date Picker -->
+        <MudItem xs="12" sm="6">
+            <MudDatePicker Label="Select Date"
+            @bind-Date="SelectedDate"
+            DisableToolbar="true"
+            MinDate="@DateTime.Today" />
+        </MudItem>
+
+        <!-- Time Slots -->
+        <MudItem xs="12" sm="6">
+            <MudSelect T="DateTime?"
+            Label="Available Time Slots"
+            @bind-Value="_selectedSlot"
+            Disabled="@(!_slots.Any())">
+
+                @foreach (var slot in _slots)
+                {
+                    <MudSelectItem Value="@slot">
+                        @slot?.ToString("HH:mm")
+                    </MudSelectItem>
+                }
+            </MudSelect>
+        </MudItem>
+
+        <!-- Book Button -->
+        <MudItem xs="12">
+            <MudButton Variant="Variant.Filled"
+            Color="Color.Primary"
+            Disabled="@(!_canBook)"
+            OnClick="BookAppointment">
+
+                @if (_isLoading)
+                {
+                    <MudProgressCircular Size="Size.Small"
+                    Indeterminate="true"
+                    Class="mr-2" />
+                }
+
+                Book Appointment
+            </MudButton>
+        </MudItem>
+
+    </MudGrid>
+
+</MudPaper>
+
+@code {
+
+    private DateTime? _selectedDate;
+
+    private DateTime? SelectedDate
+    {
+        get => _selectedDate;
+        set
+        {
+            if (_selectedDate != value)
+            {
+                _selectedDate = value;
+                _ = LoadSlotsAsync(value);   // fire async method safely
+            }
+        }
+    }
+    private List<DateTime?> _slots = new();
+    private DateTime? _selectedSlot;
+
+    private ClinicDto? _selectedClinic;
+    private List<ClinicDto> _clinics = new();
+
+    // Hardcoded for demo
+    private int _clinicId = 1;
+    private int _patientId = 1;
+
+    private bool _isLoading = false;
+
+    private bool _canBook =>
+        _selectedDate.HasValue &&
+        _selectedSlot.HasValue &&
+        !_isLoading;
+
+    protected override void OnInitialized()
+    {
+        Console.WriteLine("BOOKING PAGE INITIALIZED");
+    }
+    private void TestClick()
+    {
+        Console.WriteLine("BUTTON CLICKED");
+    }
+
+    // private async Task OnDateChanged(DateTime? date)
+    // {
+    //     if (_selectedClinic != null)
+    //         _slots = (await AppointmentService.GetAvailableSlots(_selectedClinic.Id, (DateTime?) date.Value)).ToList();
+    // }
+
+    private async Task BookAppointment()
+    {
+        if (!_selectedSlot.HasValue)
+            return;
+
+        try
+        {
+            _isLoading = true;
+
+            var appointment = new AppointmentDto
+                {
+                    ClinicId = _clinicId,
+                    PatientId = _patientId,
+                    AppointmentDate = _selectedSlot.Value
+                };
+
+            var id = await AppointmentService
+                .BookAppointment(appointment);
+
+            Snackbar.Add("Appointment booked successfully!",
+                         Severity.Success);
+
+            // Reset selection
+            _selectedSlot = null;
+            _slots.Clear();
+        }
+        catch
+        {
+            Snackbar.Add("Failed to book appointment.",
+                         Severity.Error);
+        }
+        finally
+        {
+            _isLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task LoadSlotsAsync(DateTime? date)
+    {
+        _selectedSlot = null;
+        _slots.Clear();
+
+        if (!date.HasValue)
+            return;
+
+        try
+        {
+            _isLoading = true;
+
+            var results = await AppointmentService
+                .GetAvailableSlots(_clinicId, date.Value);
+
+            _slots = results
+                .Select(x => (DateTime?)x)
+                .OrderBy(x => x)
+                .ToList();
+
+            if (!_slots.Any())
+                Snackbar.Add("No available slots.", Severity.Warning);
+        }
+        catch
+        {
+            Snackbar.Add("Failed to load slots.", Severity.Error);
+        }
+        finally
+        {
+            _isLoading = false;
+            StateHasChanged();
+        }
+    }
+
+
+    
+}
+
+   
