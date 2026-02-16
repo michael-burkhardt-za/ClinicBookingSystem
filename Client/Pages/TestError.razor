@@ -1,0 +1,12 @@
+﻿@page "/TestError"
+<h3>Test Error Page</h3>
+<button class="mud-button mud-button-filled mud-button-danger" @onclick="ThrowException">
+    Throw Exception
+</button>
+
+@code {
+    private void ThrowException()
+    {
+        throw new InvalidOperationException("This is a test exception");
+    }
+}

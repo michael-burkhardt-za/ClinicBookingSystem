@@ -39,14 +39,14 @@ namespace Application
 
         public async Task<bool> UpdateAsync(Clinic clinic)
         {
-             await _repository.UpdateAsync(clinic);
-             return true;
+             var ok = await _repository.UpdateAsync(clinic);
+             return ok;
         }
 
         public async Task<bool> DeleteAsync(int id)
         {
-            await _repository.DeleteAsync(id);
-            return true;
+            var ok = await _repository.DeleteAsync(id);
+            return ok;
         }
     }
 }

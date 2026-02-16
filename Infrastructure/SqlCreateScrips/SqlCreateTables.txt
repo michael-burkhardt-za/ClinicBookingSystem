@@ -1,0 +1,111 @@
+﻿USE [ClinicBooking]
+GO
+
+/****** Object:  Table [dbo].[Appointments]    Script Date: 2026/02/16 09:01:44 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[Appointments](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[ClinicId] [int] NOT NULL,
+	[PatientId] [int] NULL,
+	[AppointmentDate] [datetime2](7) NULL,
+	[Status] [nvarchar](50) NULL,
+ CONSTRAINT [PK__Appointmment] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[Appointments]  WITH CHECK ADD  CONSTRAINT [FK__Appointme__Clini__2A4B4B5E] FOREIGN KEY([ClinicId])
+REFERENCES [dbo].[Clinics] ([Id])
+GO
+
+ALTER TABLE [dbo].[Appointments] CHECK CONSTRAINT [FK__Appointme__Clini__2A4B4B5E]
+GO
+
+ALTER TABLE [dbo].[Appointments]  WITH CHECK ADD  CONSTRAINT [FK__Appointme__Patie__2B3F6F97] FOREIGN KEY([PatientId])
+REFERENCES [dbo].[Patients] ([Id])
+GO
+
+ALTER TABLE [dbo].[Appointments] CHECK CONSTRAINT [FK__Appointme__Patie__2B3F6F97]
+GO
+
+
+USE [ClinicBooking]
+GO
+
+/****** Object:  Table [dbo].[Appointments]    Script Date: 2026/02/16 09:01:44 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[Appointments](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[ClinicId] [int] NOT NULL,
+	[PatientId] [int] NULL,
+	[AppointmentDate] [datetime2](7) NULL,
+	[Status] [nvarchar](50) NULL,
+ CONSTRAINT [PK__Appointmment] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[Appointments]  WITH CHECK ADD  CONSTRAINT [FK__Appointme__Clini__2A4B4B5E] FOREIGN KEY([ClinicId])
+REFERENCES [dbo].[Clinics] ([Id])
+GO
+
+ALTER TABLE [dbo].[Appointments] CHECK CONSTRAINT [FK__Appointme__Clini__2A4B4B5E]
+GO
+
+ALTER TABLE [dbo].[Appointments]  WITH CHECK ADD  CONSTRAINT [FK__Appointme__Patie__2B3F6F97] FOREIGN KEY([PatientId])
+REFERENCES [dbo].[Patients] ([Id])
+GO
+
+ALTER TABLE [dbo].[Appointments] CHECK CONSTRAINT [FK__Appointme__Patie__2B3F6F97]
+GO
+
+USE [ClinicBooking]
+GO
+
+/****** Object:  Table [dbo].[Appointments]    Script Date: 2026/02/16 09:01:44 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[Appointments](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[ClinicId] [int] NOT NULL,
+	[PatientId] [int] NULL,
+	[AppointmentDate] [datetime2](7) NULL,
+	[Status] [nvarchar](50) NULL,
+ CONSTRAINT [PK__Appointmment] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[Appointments]  WITH CHECK ADD  CONSTRAINT [FK__Appointme__Clini__2A4B4B5E] FOREIGN KEY([ClinicId])
+REFERENCES [dbo].[Clinics] ([Id])
+GO
+
+ALTER TABLE [dbo].[Appointments] CHECK CONSTRAINT [FK__Appointme__Clini__2A4B4B5E]
+GO
+
+ALTER TABLE [dbo].[Appointments]  WITH CHECK ADD  CONSTRAINT [FK__Appointme__Patie__2B3F6F97] FOREIGN KEY([PatientId])
+REFERENCES [dbo].[Patients] ([Id])
+GO
+
+ALTER TABLE [dbo].[Appointments] CHECK CONSTRAINT [FK__Appointme__Patie__2B3F6F97]
+GO

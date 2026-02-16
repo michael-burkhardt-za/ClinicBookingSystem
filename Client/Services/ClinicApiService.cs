@@ -1,5 +1,6 @@
 ﻿using Client.Dto;
 using System.Net.Http.Json;
+using static System.Net.WebRequestMethods;
 
 namespace Client.Services
 {
@@ -20,11 +21,25 @@ namespace Client.Services
                    ?? Enumerable.Empty<ClinicDto>();
         }
 
-        public async Task<ClinicDto> AddClinic(ClinicDto clinic)
+        public async Task<ClinicDto?> GetClinic(int? id)
+        {
+            return await _http.GetFromJsonAsync<ClinicDto>($"clinics/{id}");
+        }
+        public async Task<ClinicDto?> AddClinic(ClinicDto clinic)
         {
             var response = await _http.PostAsJsonAsync("clinics", clinic);
-            response.EnsureSuccessStatusCode();
             return await response.Content.ReadFromJsonAsync<ClinicDto>()!;
+        }
+        public async Task<HttpResponseMessage> DeleteClinic(int id)
+        {
+            var response = await _http.DeleteAsync($"clinics/{id}");
+            return response;
+        }
+
+        public async Task<HttpResponseMessage> UpdateClinic(ClinicDto clinic)
+        {
+            var response = await _http.PutAsJsonAsync("clinics", clinic);
+            return response;
         }
     }
 }

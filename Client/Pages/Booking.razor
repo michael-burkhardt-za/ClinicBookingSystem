@@ -120,7 +120,7 @@
         }
         catch (Exception ex)
         {
-            Snackbar.Add($"Error loading clinics: {ex.Message}", Severity.Error);
+            Snackbar.Add("Error loading clinics", Severity.Error);
         }
         finally
         {
@@ -130,39 +130,77 @@
 
     private async Task BookAppointment()
     {
-        if (!_selectedSlot.HasValue)
-            return;
+        if (!_selectedSlot.HasValue) return;
 
-        try
+        _isLoading = true;
+
+        var appointment = new AppointmentDto
+            {
+                ClinicId = _selectedClinic.Id,
+                PatientId = _selectedPatient.Id,
+                AppointmentDate = _selectedSlot.Value
+            };
+
+        var id = await AppointmentService.BookAppointment(appointment);
+
+        if (id > 0)
         {
-            _isLoading = true;
-
-            var appointment = new AppointmentDto
-                {
-                    ClinicId = _selectedClinic.Id, // _clinicId,
-                    PatientId = _selectedPatient.Id, // _patientId,
-                    AppointmentDate = _selectedSlot.Value
-                };
-
-            var id = await AppointmentService.BookAppointment(appointment);
 
             Snackbar.Add("Appointment booked successfully!",
-                         Severity.Success);
+                    Severity.Success);
+        }
+        else
+        {
 
-            // Reset selection
-            _selectedSlot = null;
-            _slots.Clear();
+            Snackbar.Add("Failed to book appointment!",
+                     Severity.Error);
         }
-        catch
-        {
-            Snackbar.Add("Failed to book appointment.",
-                         Severity.Error);
-        }
-        finally
-        {
-            _isLoading = false;
-            StateHasChanged();
-        }
+
+        // Reset selection
+        _selectedSlot = null;
+        _slots.Clear();
+
+        _isLoading = false;
+        StateHasChanged();
+        // try
+        // {
+        //     _isLoading = true;
+
+        //     var appointment = new AppointmentDto
+        //         {
+        //             ClinicId = _selectedClinic.Id,
+        //             PatientId = _selectedPatient.Id,
+        //             AppointmentDate = _selectedSlot.Value
+        //         };
+
+        //     var id = await AppointmentService.BookAppointment(appointment);
+        //     if (id > 0)
+        //     {
+
+        //         Snackbar.Add("Appointment booked successfully!",
+        //                 Severity.Success);
+        //     }
+        //     else
+        //     {
+
+        //         Snackbar.Add("Failed to book appointment!",
+        //                  Severity.Error);
+        //     }
+
+        //     // Reset selection
+        //     _selectedSlot = null;
+        //     _slots.Clear();
+        // }
+        // catch
+        // {
+        //     Snackbar.Add("Failed to book appointment.",
+        //                  Severity.Error);
+        // }
+        // finally
+        // {
+        //     _isLoading = false;
+        //     StateHasChanged();
+        // }
     }
 
     private async Task LoadSlotsAsync(DateTime? date)

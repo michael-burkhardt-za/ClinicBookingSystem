@@ -29,8 +29,8 @@ namespace Application
 
         public async Task<bool> DeleteAsync(int id)
         {
-            await _repository.DeleteAsync(id);
-            return true;
+            var ok = await _repository.DeleteAsync(id);
+            return ok;
         }
 
         public async Task<Patient?> GetByIdAsync(int id)
@@ -40,8 +40,8 @@ namespace Application
 
         public async Task<bool> UpdateAsync(Patient patient)
         {
-            await _repository.UpdateAsync(patient);
-            return true;
+            var ok = await _repository.UpdateAsync(patient);
+            return ok;
         }
     }
 }

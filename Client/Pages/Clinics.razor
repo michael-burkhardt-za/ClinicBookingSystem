@@ -1,29 +1,28 @@
 ﻿@page "/clinics"
-@inject HttpClient Http
 @inject NavigationManager Nav
 @inject ISnackbar Snackbar
- 
+@inject ClinicApiService service
+
 
 
 <MudPaper Class="pa-4">
 
-  @*   <MudStack Row="true" Justify="space-between" AlignItems="center" Class="mb-4"> *@
     <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems.Center" Class="mb-4">
         <MudText Typo="Typo.h5">Clinics</MudText>
 
         <MudButton Variant="Variant.Filled"
-                   Color="Color.Primary"
-                   StartIcon="@Icons.Material.Filled.Add"
-                   OnClick="CreateClinic">
+        Color="Color.Primary"
+        StartIcon="@Icons.Material.Filled.Add"
+        OnClick="CreateClinic">
             Create New Clinic
         </MudButton>
     </MudStack>
 
     <MudTable Items="_clinics"
-              Hover="true"
-              Bordered="true"
-              Striped="true"
-              Loading="_loading">
+    Hover="true"
+    Bordered="true"
+    Striped="true"
+    Loading="_loading">
 
         <HeaderContent>
             <MudTh>Name</MudTh>
@@ -39,12 +38,12 @@
 
             <MudTd Align="Align.Right">
                 <MudIconButton Icon="@Icons.Material.Filled.Edit"
-                               Color="Color.Primary"
-                               OnClick="@(() => EditClinic(context.Id))" />
+                Color="Color.Primary"
+                OnClick="@(() => EditClinic(context.Id))" />
 
                 <MudIconButton Icon="@Icons.Material.Filled.Delete"
-                               Color="Color.Error"
-                               OnClick="@(() => DeleteClinic(context.Id))" />
+                Color="Color.Error"
+                OnClick="@(() => DeleteClinic(context.Id))" />
             </MudTd>
         </RowTemplate>
 
@@ -71,11 +70,11 @@
         try
         {
             _loading = true;
-            _clinics = await Http.GetFromJsonAsync<List<ClinicDto>>("clinics") ?? new();
+            _clinics = (await service.GetClinics()).ToList();
         }
         catch (Exception ex)
         {
-            Snackbar.Add($"Error loading clinics: {ex.Message}", Severity.Error);
+            Snackbar.Add($"Error loading clinics", Severity.Error);
         }
         finally
         {
@@ -103,8 +102,8 @@
 
         if (confirmed == true)
         {
-            var response = await Http.DeleteAsync($"clinics/{id}");
-
+            var response = await service.DeleteClinic(id);
+            
             if (response.IsSuccessStatusCode)
             {
                 Snackbar.Add("Clinic deleted successfully", Severity.Success);

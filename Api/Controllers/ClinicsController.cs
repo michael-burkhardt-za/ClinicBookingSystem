@@ -52,7 +52,9 @@ namespace Api.Controllers
                 return BadRequest();
 
             var updated = await _clinicService.UpdateAsync(clinic);
-            return Ok(updated);
+            if (!updated)
+                return NotFound();
+;            return Ok(updated);
         }
         
         [HttpDelete("{id}")]
@@ -60,6 +62,8 @@ namespace Api.Controllers
         {
             _logger.Log(LogLevel.Information, $"{nameof(Delete)}");
             var deleted = await _clinicService.DeleteAsync(id);
+            if (!deleted)
+                return NotFound();
             return Ok(deleted);
         }
     }
