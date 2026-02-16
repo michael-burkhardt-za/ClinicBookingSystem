@@ -4,6 +4,9 @@ using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.Data.SqlClient;
 using Serilog;
 using System.Data;
+using FluentValidation;
+using Application.Validators;
+using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,6 +40,12 @@ builder.Services.AddScoped<IClinicService, ClinicService>();
 builder.Services.AddScoped<IPatientService, PatientService>();
 builder.Services.AddScoped<IPatientRepository, PatientRepository>();
 
+builder.Services.AddValidatorsFromAssemblyContaining<AppointmentBookingValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<ClinicValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<PatientValidator>();
+ 
+
+
 //Only for demo purposes to allow the client to connect during development.
 builder.Services.AddCors(options =>
 {
@@ -47,7 +56,7 @@ builder.Services.AddCors(options =>
               .AllowAnyMethod();
     });
 });
-
+ 
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -56,7 +65,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-//global exeptoin handling
+//"Global exception handling is implemented using ASP.NET Core’s UseExceptionHandler middleware.
+//Validation exceptions are mapped to 400 responses, while unexpected errors return standardized ProblemDetails responses."
 
 app.UseExceptionHandler("/error");
 app.Map("/error", (HttpContext context, ILogger<Program> logger) =>
@@ -66,6 +76,25 @@ app.Map("/error", (HttpContext context, ILogger<Program> logger) =>
     if (exception != null)
     {
         logger.LogError(exception, "Unhandled exception");
+    }
+
+    if (exception is ValidationException validationException)
+    {
+        return Results.BadRequest(validationException.Errors
+            .Select(e => new
+            {
+                e.PropertyName,
+                e.ErrorMessage
+            }));
+    }
+    if (exception is KeyNotFoundException ex)
+    {
+        return Results.NotFound(new ProblemDetails
+        {
+            Title = "Resource Not Found",
+            Detail = ex.Message,
+            Status = 404
+        });
     }
 
     return Results.Problem(

@@ -29,9 +29,6 @@ namespace Api.Controllers
         {
             _logger.Log(LogLevel.Information, $"{nameof(Get)}");
             var patient = await _patientService.GetByIdAsync(id);
-            if (patient == null)
-                return NotFound();
-
             return Ok(patient);
         }
 
@@ -47,13 +44,7 @@ namespace Api.Controllers
         public async Task<IActionResult> Update([FromBody] Patient patient)
         {
             _logger.Log(LogLevel.Information, $"{nameof(Update)}");
-
-            if (patient.Id == 0)
-                return BadRequest();
-
             var updated = await _patientService.UpdateAsync(patient);
-            if (!updated)
-                return NotFound();
             return Ok(updated);
         }
         
@@ -62,8 +53,6 @@ namespace Api.Controllers
         {
             _logger.Log(LogLevel.Information, $"{nameof(Delete)}");
             var deleted = await _patientService.DeleteAsync(id);
-            if (!deleted)
-                return NotFound();
             return Ok(deleted);
         }
     }
