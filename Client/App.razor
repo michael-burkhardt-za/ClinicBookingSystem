@@ -1,4 +1,4 @@
-﻿<Router AppAssembly="@typeof(App).Assembly">
+﻿@* <Router AppAssembly="@typeof(App).Assembly">
     <Found Context="routeData">
         <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
         <FocusOnNavigate RouteData="@routeData" Selector="h1" />
@@ -9,4 +9,36 @@
             <p role="alert">Sorry, there's nothing at this address.</p>
         </LayoutView>
     </NotFound>
-</Router>
+</Router> *@
+
+
+@using Microsoft.AspNetCore.Components.Web
+@inject ILogger<App> Logger
+@inject ISnackbar Snackbar
+@using Client.Shared
+
+<AppErrorBoundary>
+    <ChildContent>
+        <Router AppAssembly="@typeof(App).Assembly">
+            <Found Context="routeData">
+                <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+                <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+            </Found>
+            <NotFound>
+                <PageTitle>Not found</PageTitle>
+                <LayoutView Layout="@typeof(MainLayout)">
+                    <p role="alert">Sorry, there's nothing at this address.</p>
+                </LayoutView>
+            </NotFound>
+        </Router>
+    </ChildContent>
+    <ErrorContent>
+        <MudAlert Severity="Severity.Error" Variant="Variant.Filled">
+            Something went wrong. Please refresh the page.
+        </MudAlert>
+    </ErrorContent>
+</AppErrorBoundary>
+
+ 
+
+

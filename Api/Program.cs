@@ -1,5 +1,6 @@
 using Application;
 using Infrastructure;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.Data.SqlClient;
 using Serilog;
 using System.Data;
@@ -54,6 +55,23 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+//global exeptoin handling
+
+app.UseExceptionHandler("/error");
+app.Map("/error", (HttpContext context, ILogger<Program> logger) =>
+{
+    var exception = context.Features.Get<IExceptionHandlerFeature>()?.Error;
+
+    if (exception != null)
+    {
+        logger.LogError(exception, "Unhandled exception");
+    }
+
+    return Results.Problem(
+        title: "An unexpected error occurred.",
+        statusCode: 500);
+});
 
 // Configure the HTTP request pipeline.
 
