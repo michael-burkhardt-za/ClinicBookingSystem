@@ -1,7 +1,11 @@
 ﻿@page "/booking"
 @inject HttpClient Http
 @inject IAppointmentApiService AppointmentService
+@inject IClinicApiService ClinicApiService
+@inject IPatientApiService PatientApiService
+
 @inject ISnackbar Snackbar
+
 
 
 <MudPaper Class="pa-4" Elevation="2">
@@ -116,7 +120,7 @@
         try
         {
             _isLoading = true;
-            _clinics = await Http.GetFromJsonAsync<List<ClinicDto>>("clinics") ?? new();
+            _clinics = (await ClinicApiService.GetClinics()).ToList();
         }
         catch (Exception ex)
         {
@@ -163,7 +167,7 @@
         _isLoading = false;
         StateHasChanged();
 
-         
+
     }
 
     private async Task LoadSlotsAsync(DateTime? date)
@@ -205,7 +209,7 @@
         try
         {
             _isLoading = true;
-            _patients = await Http.GetFromJsonAsync<List<PatientDto>>("patients") ?? new();
+            _patients = (await PatientApiService.GetPatients()).ToList();
         }
         catch (Exception ex)
         {

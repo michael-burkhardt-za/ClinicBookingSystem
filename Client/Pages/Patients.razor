@@ -1,5 +1,6 @@
 ﻿@page "/patients"
 @inject HttpClient Http
+@inject IPatientApiService PatientApiService
 @inject NavigationManager Nav
 @inject ISnackbar Snackbar
 
@@ -62,7 +63,8 @@
 </MudPaper>
 
 @code {
-
+    
+    [Inject] private IDialogService DialogService { get; set; } = default!;
     private List<PatientDto> _patients = new();
     private bool _loading = true;
 
@@ -113,7 +115,8 @@
 
         if (confirmed == true)
         {
-            var response = await Http.DeleteAsync($"patients/{id}");
+            //var response = await Http.DeleteAsync($"patients/{id}");
+            var response = await PatientApiService.DeletePatient(id);
 
             if (response.IsSuccessStatusCode)
             {
@@ -127,5 +130,5 @@
         }
     }
 
-    [Inject] private IDialogService DialogService { get; set; } = default!;
+   
 }

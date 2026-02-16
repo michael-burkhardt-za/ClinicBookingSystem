@@ -1,47 +1,44 @@
 ﻿@page "/patient/create"
 @page "/patient/edit/{Id:int}"
 @inject ISnackbar Snackbar
-
-@using System.Net.Http.Json
-@inject HttpClient Http
 @inject NavigationManager Nav
+@inject IPatientApiService PatientApiService
 
 <MudPaper Class="pa-6 mx-auto" MaxWidth="600px" Elevation="3">
 
     <MudText Typo="Typo.h5" Class="mb-4">
         @(IsEditMode ? "Edit Patient" : "Create Patient")
     </MudText>
-
     <MudForm @ref="_form" Model="_patient" OnValidSubmit="SavePatient">
 
         <MudTextField Label="Patient Name"
-                      @bind-Value="_patient.FirstName"
-                      For="@(() => _patient.FirstName)"
-                      Required="true" />
+        @bind-Value="_patient.FirstName"
+        For="@(() => _patient.FirstName)"
+        Required="true" />
 
         <MudTextField Label="Patient Surname"
-                      @bind-Value="_patient.LastName"
-                      For="@(() => _patient.LastName)"
-                      Required="true" />
+        @bind-Value="_patient.LastName"
+        For="@(() => _patient.LastName)"
+        Required="true" />
 
         <MudTextField Label="Email"
-                      @bind-Value="_patient.Email"
-                      For="@(() => _patient.Email)"
-                      Required="true" />
+        @bind-Value="_patient.Email"
+        For="@(() => _patient.Email)"
+        Required="true" />
 
         <MudDivider Class="my-4" />
 
         <MudStack Row="true" Spacing="2">
-          
+
             <MudButton OnClick="SavePatient"
-                       Variant="Variant.Filled"
-                       Color="Color.Primary">
+            Variant="Variant.Filled"
+            Color="Color.Primary">
                 Save
             </MudButton>
 
             <MudButton Variant="Variant.Outlined"
-                       Color="Color.Secondary"
-                       OnClick="Cancel">
+            Color="Color.Secondary"
+            OnClick="Cancel">
                 Cancel
             </MudButton>
         </MudStack>
@@ -60,7 +57,7 @@
     {
         if (IsEditMode)
         {
-            var patient = await Http.GetFromJsonAsync<PatientDto>($"patients/{Id}");
+            var patient = await PatientApiService.GetPatient(Id);
             if (patient is not null)
                 _patient = patient;
         }
@@ -75,14 +72,14 @@
 
         if (IsEditMode)
         {
-            await Http.PutAsJsonAsync("patients", _patient);
-            Snackbar.Add("patient updated successfully", Severity.Success);
+            await PatientApiService.UpdatePatient(_patient);
+            Snackbar.Add("Patient updated successfully", Severity.Success);
             
         }
         else
         {
-            await Http.PostAsJsonAsync("patients", _patient);
-            Snackbar.Add("patient created successfully", Severity.Success);
+            await PatientApiService.AddPatient(_patient);
+            Snackbar.Add("Patient created successfully", Severity.Success);
         }
 
         Nav.NavigateTo("/patients");

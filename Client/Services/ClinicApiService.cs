@@ -21,9 +21,9 @@ namespace Client.Services
             return await _http.GetFromJsonAsync<IEnumerable<ClinicDto>>("clinics")
                    ?? Enumerable.Empty<ClinicDto>();
         }
-
         public async Task<ClinicDto?> GetClinic(int? id)
         {
+            if (id == null) return null;
             return await _http.GetFromJsonAsync<ClinicDto>($"clinics/{id}");
         }
         public async Task<ClinicDto?> AddClinic(ClinicDto clinic)
@@ -36,7 +36,6 @@ namespace Client.Services
             var response = await _http.DeleteAsync($"clinics/{id}");
             return response;
         }
-
         public async Task<HttpResponseMessage> UpdateClinic(ClinicDto clinic)
         {
             var response = await _http.PutAsJsonAsync("clinics", clinic);

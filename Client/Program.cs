@@ -17,6 +17,7 @@ builder.Services.AddMudServices();
 
 builder.Services.AddScoped<IAppointmentApiService, AppointmentApiService>();
 builder.Services.AddScoped<IClinicApiService, ClinicApiService>();
+builder.Services.AddScoped<IPatientApiService, PatientApiService>();
 
 
 await builder.Build().RunAsync();
