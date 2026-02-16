@@ -10,6 +10,8 @@ namespace Application
     public interface IAppointmentService
     {
         Task<IEnumerable<DateTime>> GetAvailableSlots(int clinicId, DateTime date);
-        Task<int> BookAppointment(Appointment appointment);
+        Task<int> BookAppointment(AppointmentBooking appointment);
+        Task<IEnumerable<Appointment>> GetClinicAppointments(int clinicId);
+        Task<IEnumerable<Appointment>> GetPatientsAppointments(int patientid);
     }
 }

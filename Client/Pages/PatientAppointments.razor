@@ -1,0 +1,78 @@
+﻿@page "/patientappointments/{Id:int}"
+@inject NavigationManager Nav
+@inject IAppointmentApiService AppointmentService
+@inject ISnackbar Snackbar
+  
+@*@using YourNamespace.Shared  Change to your DTO namespace *@
+
+
+<MudPaper Class="pa-4">
+
+    <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems.Center" Class="mb-4">
+        <MudText Typo="Typo.h5">Patient Appointments</MudText>
+        <MudText Typo="Typo.h5">Patient @Id</MudText>
+    </MudStack>
+
+    <MudTable Items="_appointments"
+              Dense="true"
+              Hover="true"
+              Bordered="true"
+              Striped="true"
+              Loading="_loading">
+
+        <HeaderContent>
+            <MudTh>Clinic</MudTh>
+            <MudTh>Appointment Date</MudTh>
+            <MudTh>Patient</MudTh>
+            <MudTh>Status</MudTh>
+            <MudTh>Email</MudTh>
+        </HeaderContent>
+
+        <RowTemplate>
+            <MudTd DataLabel="Patient">
+                @($"{context.FirstName} {context.LastName}")
+            </MudTd>
+            <MudTd DataLabel="Appointment Date">
+                @context.AppointmentDate.ToString("dd MMM yyyy HH:mm")
+            </MudTd>
+            <MudTd DataLabel="Clinic">@context.ClinicName</MudTd>
+            <MudTd DataLabel="Status">
+                <MudChip T="string" Color="@GetStatusColor(context.Status)"
+                         Variant="Variant.Filled"
+                         Size="Size.Small">
+                    @context.Status
+                </MudChip>
+            </MudTd>
+            <MudTd DataLabel="Email">@context.Email</MudTd>
+        </RowTemplate>
+
+        <NoRecordsContent>
+            <MudText>No appointments found.</MudText>
+        </NoRecordsContent>
+
+    </MudTable>
+
+</MudPaper>
+
+@code {
+    [Parameter] public int Id { get; set; }
+    private IEnumerable<AppointmentDto> _appointments = Enumerable.Empty<AppointmentDto>();
+    private bool _loading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _loading = true;
+        _appointments = await AppointmentService.GetPatientAppointments(Id);
+        _loading = false;
+    }
+    private Color GetStatusColor(string status)
+    {
+        return status?.ToLower() switch
+        {
+            "confirmed" => Color.Success,
+            "pending" => Color.Warning,
+            "cancelled" => Color.Error,
+            _ => Color.Default
+        };
+    }
+}

@@ -27,11 +27,27 @@ namespace Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Book(Appointment appointment)
+        public async Task<IActionResult> Book(AppointmentBooking appointment)
         {
             _logger.Log(LogLevel.Information, $"{nameof(Book)}");
             var id = await _service.BookAppointment(appointment);
             return Ok(id);
+        }
+
+        [HttpGet("clinics/{id:int}")]
+        public async Task<IActionResult> GetClinicAppointments(int id)
+        {
+            _logger.Log(LogLevel.Information, $"{nameof(GetClinicAppointments)}");
+            var appointments = await _service.GetClinicAppointments(id);
+            return Ok(appointments);
+        }
+
+        [HttpGet("patient/{id:int}")]
+        public async Task<IActionResult> GetPatientAppointments(int id)
+        {
+            _logger.Log(LogLevel.Information, $"{nameof(GetPatientAppointments)}");
+            var appointments = await _service.GetPatientsAppointments(id);
+            return Ok(appointments);
         }
     }
 }

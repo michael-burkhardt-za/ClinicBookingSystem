@@ -9,7 +9,7 @@ namespace Infrastructure
     public class AppointmentRepository : IAppointmentRepository
     {
         private readonly IDbConnection _db;
-        public AppointmentRepository(IDbConnection db)//(string connectionstring)
+        public AppointmentRepository(IDbConnection db)
         {
             _db = db;
         }
@@ -25,8 +25,7 @@ namespace Infrastructure
 
             return allSlots.Except(booked);
         }
-
-        public async Task<int> CreateAppointment(Appointment appointment)
+        public async Task<int> CreateAppointment(AppointmentBooking appointment)
         {
             var sql = @"INSERT INTO Appointments 
                     (ClinicId, PatientId, AppointmentDate, Status)
@@ -35,20 +34,56 @@ namespace Infrastructure
 
             return await _db.ExecuteScalarAsync<int>(sql, appointment);
         }
+        public async Task<IEnumerable<Appointment>> GetClinicAppointments(int clinicid)
+        {
+            var sql = @"
+            SELECT
+                a.Id, 
+                a.ClinicId, 
+                a.PatientId,
+                a.AppointmentDate,
+                a.Status, 
+                c.Name as ClinicName, 
+                p.id as PatientId, 
+                p.FirstName, 
+                p.LastName, 
+                p.Email
+              FROM
+              Clinics c
+              left join Appointments a on a.ClinicId = c.Id 
+              left join Patients p on p.Id = a.PatientId
+ 
+              where c.Id = @ClinicId
+              order by  a.AppointmentDate, p.Id 
+            ";
+            return await _db.QueryAsync<Appointment>(sql, new { ClinicId = clinicid });
 
-        //public async Task<IEnumerable<DateTime>> GetAvailableSlots(int clinicId, DateTime date)
-        //{
-        //    var sql = @"
-        //    SELECT SlotTime
-        //    FROM AppointmentSlots
-        //    WHERE ClinicId = @ClinicId
-        //      AND Date = @Date
-        //      AND SlotTime NOT IN (
-        //          SELECT Time FROM Appointments 
-        //          WHERE ClinicId = @ClinicId AND Date = @Date
-        //      );";
+             
+        }
 
-        //    return await _db.QueryAsync<DateTime>(sql, new { ClinicId = clinicId, Date = date });
-        //}
+        public async Task<IEnumerable<Appointment>> GetPatientAppointments(int patientid)
+        {
+            var sql = @"
+            SELECT
+                a.Id, 
+                a.ClinicId, 
+                a.PatientId,
+                a.AppointmentDate,
+                a.Status, 
+                c.Name as ClinicName, 
+                p.id as PatientId, 
+                p.FirstName, 
+                p.LastName, 
+                p.Email
+              FROM
+              Appointments a
+              left join Clinics c on a.ClinicId = c.Id 
+              left join Patients p on p.Id = a.PatientId
+ 
+              where p.Id = @PatientId
+              order by  c.Id , a.AppointmentDate 
+            ";
+            return await _db.QueryAsync<Appointment>(sql, new { PatientId = patientid });
+        }
     }
 }

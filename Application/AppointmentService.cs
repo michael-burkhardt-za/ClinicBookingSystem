@@ -25,10 +25,20 @@ namespace Application
             return await _repository.GetAvailableSlots(clinicId, date);
         }
 
-        public async Task<int> BookAppointment(Appointment appointment)
+        public async Task<int> BookAppointment(AppointmentBooking appointment)
         {
             appointment.Status = "Confirmed";
             return await _repository.CreateAppointment(appointment);
+        }
+
+        public async Task<IEnumerable<Appointment>> GetClinicAppointments(int clinicId)
+        {
+            return await _repository.GetClinicAppointments(clinicId);
+        }
+
+        public async Task<IEnumerable<Appointment>> GetPatientsAppointments(int patientid)
+        {
+            return await _repository.GetPatientAppointments(patientid);
         }
     }
 }

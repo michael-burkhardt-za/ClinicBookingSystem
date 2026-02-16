@@ -1,9 +1,7 @@
 ﻿using Client.Dto;
 using Client.Services.Interfases;
- 
 using System.Net.Http.Json;
-using static Client.Pages.Weather;
-using static System.Net.WebRequestMethods;
+ 
 
 namespace Client.Services
 {
@@ -28,7 +26,7 @@ namespace Client.Services
             
         }
 
-        public async Task<int> BookAppointment(AppointmentDto appointment)
+        public async Task<int> BookAppointment(AppointmentBookingDto appointment)
         {
             var response = await _http.PostAsJsonAsync("appointments", appointment);
 
@@ -36,6 +34,18 @@ namespace Client.Services
 
             return await response.Content.ReadFromJsonAsync<int>();
             
+        }
+
+        public async Task<IEnumerable<AppointmentDto>> GetClinicAppointments(int clinicId)
+        {
+            return await _http.GetFromJsonAsync<IEnumerable<AppointmentDto>>($"appointments/clinics/{clinicId}")
+                   ?? Enumerable.Empty<AppointmentDto>();
+        }
+
+        public async Task<IEnumerable<AppointmentDto>> GetPatientAppointments(int patientId)
+        {
+            return await _http.GetFromJsonAsync<IEnumerable<AppointmentDto>>($"appointments/patient/{patientId}")
+                  ?? Enumerable.Empty<AppointmentDto>();
         }
     }
 }

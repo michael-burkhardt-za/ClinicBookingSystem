@@ -1,7 +1,7 @@
 ﻿@page "/clinics"
 @inject NavigationManager Nav
 @inject ISnackbar Snackbar
-@inject ClinicApiService service
+@inject IClinicApiService service
 
 
 
@@ -44,6 +44,13 @@
                 <MudIconButton Icon="@Icons.Material.Filled.Delete"
                 Color="Color.Error"
                 OnClick="@(() => DeleteClinic(context.Id))" />
+                
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Info"
+                           StartIcon="@Icons.Material.Filled.Bookmark"
+                           OnClick="@(() => ShowClinicAppointments(context.Id))">
+                    Appointments
+                </MudButton>
             </MudTd>
         </RowTemplate>
 
@@ -90,6 +97,11 @@
     private void EditClinic(int id)
     {
         Nav.NavigateTo($"/clinic/edit/{id}");
+    }
+
+    private void ShowClinicAppointments(int id)
+    {
+        Nav.NavigateTo($"/clinicappointments/{id}");
     }
 
     private async Task DeleteClinic(int id)

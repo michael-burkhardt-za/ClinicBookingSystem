@@ -44,6 +44,12 @@
                 <MudIconButton Icon="@Icons.Material.Filled.Delete"
                                Color="Color.Error"
                                OnClick="@(() => DeletePatient(context.Id))" />
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Info"
+                           StartIcon="@Icons.Material.Filled.Bookmark"
+                           OnClick="@(() => ShowPatientAppointments(context.Id))">
+                    Appointments
+                </MudButton>
             </MudTd>
         </RowTemplate>
 
@@ -90,6 +96,11 @@
     private void EditPatient(int id)
     {
         Nav.NavigateTo($"/patient/edit/{id}");
+    }
+
+    private void ShowPatientAppointments(int id)
+    {
+        Nav.NavigateTo($"/patientappointments/{id}");
     }
 
     private async Task DeletePatient(int id)

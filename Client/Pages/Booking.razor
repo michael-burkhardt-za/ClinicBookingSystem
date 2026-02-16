@@ -134,12 +134,12 @@
 
         _isLoading = true;
 
-        var appointment = new AppointmentDto
-            {
-                ClinicId = _selectedClinic.Id,
-                PatientId = _selectedPatient.Id,
-                AppointmentDate = _selectedSlot.Value
-            };
+        var appointment = new AppointmentBookingDto
+        {
+            ClinicId = _selectedClinic.Id,
+            PatientId = _selectedPatient.Id,
+            AppointmentDate = _selectedSlot.Value
+        };
 
         var id = await AppointmentService.BookAppointment(appointment);
 
@@ -162,45 +162,8 @@
 
         _isLoading = false;
         StateHasChanged();
-        // try
-        // {
-        //     _isLoading = true;
 
-        //     var appointment = new AppointmentDto
-        //         {
-        //             ClinicId = _selectedClinic.Id,
-        //             PatientId = _selectedPatient.Id,
-        //             AppointmentDate = _selectedSlot.Value
-        //         };
-
-        //     var id = await AppointmentService.BookAppointment(appointment);
-        //     if (id > 0)
-        //     {
-
-        //         Snackbar.Add("Appointment booked successfully!",
-        //                 Severity.Success);
-        //     }
-        //     else
-        //     {
-
-        //         Snackbar.Add("Failed to book appointment!",
-        //                  Severity.Error);
-        //     }
-
-        //     // Reset selection
-        //     _selectedSlot = null;
-        //     _slots.Clear();
-        // }
-        // catch
-        // {
-        //     Snackbar.Add("Failed to book appointment.",
-        //                  Severity.Error);
-        // }
-        // finally
-        // {
-        //     _isLoading = false;
-        //     StateHasChanged();
-        // }
+         
     }
 
     private async Task LoadSlotsAsync(DateTime? date)

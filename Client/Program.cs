@@ -16,7 +16,7 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(uriStrin
 builder.Services.AddMudServices();
 
 builder.Services.AddScoped<IAppointmentApiService, AppointmentApiService>();
-builder.Services.AddScoped<ClinicApiService>();
+builder.Services.AddScoped<IClinicApiService, ClinicApiService>();
 
 
 await builder.Build().RunAsync();

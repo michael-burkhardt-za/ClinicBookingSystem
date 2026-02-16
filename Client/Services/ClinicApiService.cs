@@ -1,10 +1,11 @@
 ﻿using Client.Dto;
+using Client.Services.Interfases;
 using System.Net.Http.Json;
 using static System.Net.WebRequestMethods;
 
 namespace Client.Services
 {
-    public class ClinicApiService
+    public class ClinicApiService : IClinicApiService
     {
         private readonly HttpClient _http;
         private readonly ILogger<ClinicApiService> _logger;
