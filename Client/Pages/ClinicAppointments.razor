@@ -41,6 +41,11 @@
                 </MudChip>
             </MudTd>
             <MudTd DataLabel="Email">@context.Email</MudTd>
+            <MudTd Align="Align.Right">
+                <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                               Color="Color.Error"
+                               OnClick="@(() => DeleteAppointment(context.Id))" />
+            </MudTd>
         </RowTemplate>
 
         <NoRecordsContent>
@@ -61,6 +66,23 @@
         _loading = true;
         _appointments = await AppointmentService.GetClinicAppointments(Id);  
         _loading = false;
+    }
+    private async Task DeleteAppointment(int appointmentid)
+    {
+        var response = await AppointmentService.DeleteAppointment(appointmentid);
+        if (response.IsSuccessStatusCode)
+        {
+
+            Snackbar.Add("Appointment deleted successfully", Severity.Success);
+            _appointments = await AppointmentService.GetClinicAppointments(Id);
+        }
+        else
+        {
+
+            Snackbar.Add("Failed to delete appointment", Severity.Error);
+        }
+
+
     }
     private Color GetStatusColor(string status)
     {
