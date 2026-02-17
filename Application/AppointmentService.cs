@@ -46,7 +46,11 @@ namespace Application
             var result = await _validator.ValidateAsync(appointment);
             if (!result.IsValid)
                 throw new ValidationException(result.Errors);
-           
+
+            bool bookingdateusedbyuser = await _repository.CheckPatientAlreadyBookedDate(appointment);
+            if(bookingdateusedbyuser)
+                throw new ValidationException("Patient aready has an appointment on this date");
+
             return await _repository.CreateAppointment(appointment);
         }
 

@@ -36,33 +36,7 @@ namespace Infrastructure
         }
         public async Task<IEnumerable<Appointment>> GetClinicAppointments(int clinicid)
         {
-            var sql = @"
-            SELECT
-                a.Id, 
-                a.ClinicId, 
-                a.PatientId,
-                a.AppointmentDate,
-                a.Status, 
-                c.Name as ClinicName, 
-                p.id as PatientId, 
-                p.FirstName, 
-                p.LastName, 
-                p.Email
-              FROM
-              Clinics c
-              left join Appointments a on a.ClinicId = c.Id 
-              left join Patients p on p.Id = a.PatientId
- 
-              where c.Id = @ClinicId
-              order by  a.AppointmentDate, p.Id 
-            ";
-            return await _db.QueryAsync<Appointment>(sql, new { ClinicId = clinicid });
 
-             
-        }
-
-        public async Task<IEnumerable<Appointment>> GetPatientAppointments(int patientid)
-        {
             var sql = @"
             SELECT
                 a.Id, 
@@ -80,10 +54,52 @@ namespace Infrastructure
               left join Clinics c on a.ClinicId = c.Id 
               left join Patients p on p.Id = a.PatientId
  
-              where p.Id = @PatientId
+              where c.Id = @ClinicId
               order by  c.Id , a.AppointmentDate 
             ";
+            return await _db.QueryAsync<Appointment>(sql, new { ClinicId = clinicid });
+
+             
+        }
+        public async Task<IEnumerable<Appointment>> GetPatientAppointments(int patientid)
+        {
+            var sql = @"
+            SELECT
+                a.Id, 
+                a.ClinicId, 
+                a.PatientId,
+                a.AppointmentDate,
+                a.Status, 
+                c.Name as ClinicName, 
+                p.id as PatientId, 
+                p.FirstName, 
+                p.LastName, 
+                p.Email
+            FROM
+                Appointments a
+                left join Clinics c on a.ClinicId = c.Id 
+                left join Patients p on p.Id = a.PatientId
+ 
+            WHERE p.Id = @PatientId
+            ORDER BY c.Id , a.AppointmentDate 
+            ";
             return await _db.QueryAsync<Appointment>(sql, new { PatientId = patientid });
+        }
+        public async Task<bool> CheckPatientAlreadyBookedDate(AppointmentBooking appointment)
+        {
+            var sql = @"
+                SELECT COUNT(1)
+                FROM Appointments
+                WHERE PatientId = @PatientId
+                AND AppointmentDate = @AppointmentDate;
+                ";
+
+            var count = await _db.ExecuteScalarAsync<int>(
+                sql,new { appointment.PatientId, appointment.AppointmentDate });
+
+            return count > 0;
+
+           
         }
     }
 }

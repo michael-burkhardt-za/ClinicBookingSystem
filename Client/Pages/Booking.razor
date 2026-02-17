@@ -3,7 +3,6 @@
 @inject IAppointmentApiService AppointmentService
 @inject IClinicApiService ClinicApiService
 @inject IPatientApiService PatientApiService
-
 @inject ISnackbar Snackbar
 
 
@@ -23,7 +22,7 @@
     <MudSelect T="PatientDto" Label="Select Patient" @bind-Value="_selectedPatient">
         @foreach (var patient in _patients)
         {
-            <MudSelectItem Value="@patient">@patient.LastName</MudSelectItem>
+            <MudSelectItem Value="@patient">@patient.FirstName  @patient.LastName</MudSelectItem>
         }
     </MudSelect>
 
@@ -99,7 +98,6 @@
     private List<ClinicDto> _clinics = new();
     private List<PatientDto> _patients = new();
 
-    // Hardcoded for demo
     private int _clinicId;
     private int _patientId;
 
@@ -156,7 +154,9 @@
         else
         {
 
-            Snackbar.Add("Failed to book appointment!",
+            Snackbar.Add(@"Failed to book appointment! 
+                           Please check that you don't already 
+                           have an appointment on the day and time at another clinic.",
                      Severity.Error);
         }
 
@@ -222,8 +222,6 @@
     
     
     }
-
-
     
 }
 
