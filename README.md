@@ -15,4 +15,4 @@ No deprecated packages
 No over-engineering
 
 SqlScripts
-Create Database and Create Table scrips can be found in the Infrastructure Project
+Create Database and Create Tables scripts can be found in the Infrastructure Project
