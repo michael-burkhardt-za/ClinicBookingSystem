@@ -14,5 +14,6 @@ namespace Application
         Task<IEnumerable<Appointment>> GetClinicAppointments(int clinicId);
         Task<IEnumerable<Appointment>> GetPatientAppointments(int patientid);
         Task<bool> CheckPatientAlreadyBookedDate(AppointmentBooking appointment);
+        Task<bool> DeleteAsync(int appointmentid);
     }
 }

@@ -2,7 +2,7 @@
 @inject NavigationManager Nav
 @inject IAppointmentApiService AppointmentService
 @inject ISnackbar Snackbar
-  
+
 @*@using YourNamespace.Shared  Change to your DTO namespace *@
 
 
@@ -14,11 +14,11 @@
     </MudStack>
 
     <MudTable Items="_appointments"
-              Dense="true"
-              Hover="true"
-              Bordered="true"
-              Striped="true"
-              Loading="_loading">
+    Dense="true"
+    Hover="true"
+    Bordered="true"
+    Striped="true"
+    Loading="_loading">
 
         <HeaderContent>
             <MudTh>Patient</MudTh>
@@ -38,12 +38,19 @@
             <MudTd DataLabel="Clinic">@context.ClinicName</MudTd>
             <MudTd DataLabel="Status">
                 <MudChip T="string" Color="@GetStatusColor(context.Status)"
-                         Variant="Variant.Filled"
-                         Size="Size.Small">
+                Variant="Variant.Filled"
+                Size="Size.Small">
                     @context.Status
                 </MudChip>
             </MudTd>
             <MudTd DataLabel="Email">@context.Email</MudTd>
+            <MudTd Align="Align.Right">
+
+
+                <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                Color="Color.Error"
+                OnClick="@(() => DeleteAppointment(context.Id))" />
+            </MudTd>
         </RowTemplate>
 
         <NoRecordsContent>
@@ -56,13 +63,13 @@
 
 @code {
     [Parameter] public int Id { get; set; }
-    private IEnumerable<AppointmentDto> _appointments = Enumerable.Empty<AppointmentDto>();
+    private List<AppointmentDto> _appointments = new();
     private bool _loading = true;
 
     protected override async Task OnInitializedAsync()
     {
         _loading = true;
-        _appointments = await AppointmentService.GetPatientAppointments(Id);
+        _appointments = (await AppointmentService.GetPatientAppointments(Id)).ToList();
         _loading = false;
     }
     private Color GetStatusColor(string status)
@@ -74,5 +81,22 @@
             "cancelled" => Color.Error,
             _ => Color.Default
         };
+    }
+
+    private async Task DeleteAppointment(int appointmentid)
+    {
+        var response = await AppointmentService.DeleteAppointment(appointmentid);
+        if(response.IsSuccessStatusCode)
+        {
+
+            Snackbar.Add("Appointment deleted successfully", Severity.Success);
+            _appointments = (await AppointmentService.GetPatientAppointments(Id)).ToList();
+        }
+        else{
+
+            Snackbar.Add("Failed to delete appointment", Severity.Error);
+        }
+        
+
     }
 }

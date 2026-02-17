@@ -101,5 +101,14 @@ namespace Infrastructure
 
            
         }
+
+        public async Task<bool> DeleteAsync(int appointmentid)
+        {
+            var sql = "DELETE FROM Appointments WHERE Id = @Id";
+
+            var rowsAffected = await _db.ExecuteAsync(sql, new { Id = appointmentid });
+
+            return rowsAffected > 0;
+        }
     }
 }

@@ -47,5 +47,11 @@ namespace Client.Services
             return await _http.GetFromJsonAsync<IEnumerable<AppointmentDto>>($"appointments/patient/{patientId}")
                   ?? Enumerable.Empty<AppointmentDto>();
         }
+
+        public async Task<HttpResponseMessage> DeleteAppointment(int id)
+        {
+            var response = await _http.DeleteAsync($"appointments/{id}");
+            return response;
+        }
     }
 }

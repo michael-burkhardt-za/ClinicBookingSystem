@@ -49,5 +49,13 @@ namespace Api.Controllers
             var appointments = await _service.GetPatientsAppointments(id);
             return Ok(appointments);
         }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            _logger.Log(LogLevel.Information, $"{nameof(Delete)}");
+            var deleted = await _service.DeleteAsync(id);
+            return Ok(deleted);
+        }
     }
 }

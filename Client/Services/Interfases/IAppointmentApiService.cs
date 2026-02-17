@@ -8,5 +8,6 @@ namespace Client.Services.Interfases
         Task<int> BookAppointment(AppointmentBookingDto appointment);
         Task <IEnumerable<AppointmentDto>> GetClinicAppointments(int clinicid);
         Task<IEnumerable<AppointmentDto>> GetPatientAppointments(int clinicid);
+        Task<HttpResponseMessage> DeleteAppointment(int id);
     }
 }

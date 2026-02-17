@@ -69,5 +69,12 @@ namespace Application
 
             return await _repository.GetPatientAppointments(patientid);
         }
+
+        public async Task<bool> DeleteAsync(int appointmentid)
+        {
+            if (appointmentid <= 0)
+                throw new ValidationException("AppointmentId must be greater than zero.");
+            return await _repository.DeleteAsync(appointmentid);
+        }
     }
 }
