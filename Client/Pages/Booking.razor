@@ -77,7 +77,6 @@
 @code {
 
     private DateTime? _selectedDate;
-
     private DateTime? SelectedDate
     {
         get => _selectedDate;
@@ -147,13 +146,10 @@
 
         if (id > 0)
         {
-
-            Snackbar.Add("Appointment booked successfully!",
-                    Severity.Success);
+            Snackbar.Add("Appointment booked successfully!", Severity.Success);
         }
         else
         {
-
             Snackbar.Add(@"Failed to book appointment! 
                            Please check that you don't already 
                            have an appointment on the day and time at another clinic.",

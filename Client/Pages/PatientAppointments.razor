@@ -3,9 +3,6 @@
 @inject IAppointmentApiService AppointmentService
 @inject ISnackbar Snackbar
 
-@*@using YourNamespace.Shared  Change to your DTO namespace *@
-
-
 <MudPaper Class="pa-4">
 
     <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems.Center" Class="mb-4">
@@ -26,6 +23,7 @@
             <MudTh>Clinic</MudTh>
             <MudTh>Status</MudTh>
             <MudTh>Email</MudTh>
+            <MudTh>Actions</MudTh>
         </HeaderContent>
 
         <RowTemplate>
